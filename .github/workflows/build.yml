@@ -80,6 +80,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
+        with:
+          path: 'esphome/OneESP32ToRuleThemAll'
+      - name: Write secrets
+        uses: "DamianReeves/write-file-action@master"
+        with:
+          path: ${{ github.workspace }}/esphome/secrets.yaml
+          write-mode: overwrite
+          contents: |
+            wifi_ssid: "TestWifi"
+            wifi_password: "123456"
+            fallback_ssid: "Fallback Hotspot"
+            fallback_password: "123456"
+            api_password: "123456"
+            ota_password: "123456"
+            api_encryption_key: "PK1TIZ9i0zyXWT9DXOFjvgDxq293t5Rti1q+evtOWxc="
+            mqtt_server: "192.168.1.2"
+            mqtt_user: "esphome"
+            mqtt_password: "123456"
+      - name: copy file
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
@@ -101,6 +122,23 @@ jobs:
         with:
           name: ${{ inputs.combined-name != '' && format('{0}-{1}', needs.prepare.outputs.artifact-prefix, steps.esphome-build.outputs.name) || steps.esphome-build.outputs.original-name }}
           path: output
+      - name: Report build status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let status;
+            if ('${{ job.status }}' === 'success') {
+              status = 'completed successfully';
+            } else {
+              status = 'failed';
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `The GitHub Actions build has ${status}. Check the [workflow run details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
+            })
 
   combine:
     name: Combine manifests
