@@ -98,9 +98,21 @@ jobs:
             mqtt_server: "192.168.1.2"
             mqtt_user: "esphome"
             mqtt_password: "123456"
-      - name: copy file
+      - name: Thz504
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
+      - name: Thz404
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
+          sed -i 's/^#\s*thz404:/  thz404:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
+      - name: Thz55eco
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
+          sed -i 's/^#\s*thz55eco:/  thz55eco:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
+      - name: Ttf07
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
+          sed -i 's/^#\s*ttf07:/  ttf07:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
@@ -111,25 +123,34 @@ jobs:
           cd ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/
           find . -name '*.cpp' -o -name '*.h' -o -name '*.ino' | xargs clang-format-14 -i
           git diff --exit-code --color || (echo "Please run clang-format on your code." && exit 1)
-      - name: Build Firmware
+      - name: Build Firmware for Thz504
         uses: esphome/build-action@v4.0.3
         id: esphome-build
         with:
-          yaml-file: ${{ matrix.file }}
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
           version: ${{ inputs.esphome-version }}
-          complete-manifest: true
           cache: true
-          release-summary: ${{ inputs.release-summary }}
-          release-url: ${{ inputs.release-url }}
-      - name: Move files for versioning
-        run: |
-          mkdir -p output/${{ needs.prepare.outputs.version }}
-          mv ${{ steps.esphome-build.outputs.name }}/* output/${{ needs.prepare.outputs.version }}/
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4.3.4
+      - name: Build Firmware for Thz404
+        uses: esphome/build-action@v4.0.3
+        id: esphome-build-thz404
         with:
-          name: ${{ inputs.combined-name != '' && format('{0}-{1}', needs.prepare.outputs.artifact-prefix, steps.esphome-build.outputs.name) || steps.esphome-build.outputs.original-name }}
-          path: output
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
+      - name: Build Firmware for Thz55eco
+        uses: esphome/build-action@v4.0.3
+        id: esphome-build-thz55eco
+        with:
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
+      - name: Build Firmware for Ttf07
+        uses: esphome/build-action@v4.0.3
+        id: esphome-build-ttf07
+        with:
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
       - name: Report build status
         uses: actions/github-script@v7
         with:
@@ -147,51 +168,3 @@ jobs:
               repo: context.repo.repo,
               body: `The GitHub Actions build has ${status}. Check the [workflow run details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
             })
-
-  combine:
-    name: Combine manifests
-    needs:
-      - prepare
-      - build
-    runs-on: ubuntu-latest
-    if: inputs.combined-name != ''
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4.1.8
-        with:
-          path: files
-          pattern: ${{ needs.prepare.outputs.artifact-prefix }}-*
-
-      - name: Get artifact names
-        id: artifacts
-        run: |
-          artifacts=$(ls --format=single-column files)
-          echo "artifacts<<EOF" >> $GITHUB_OUTPUT
-          echo "$artifacts" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Delete prefixed artifacts
-        uses: geekyeggo/delete-artifact@v5.1.0
-        with:
-          name: ${{ steps.artifacts.outputs.artifacts }}
-
-      - name: Combine all parts into a single manifest
-        run: |
-          version="${{ needs.prepare.outputs.version }}"
-          mkdir -p "output/$version"
-          pushd files
-          for device in *; do
-            pushd $device
-            pushd $version
-            cp * "../../../output/$version/"
-            popd
-            popd
-          done
-          popd
-          jq -s '(.[0] | del(.builds)) + {"builds": (reduce .[].builds as $b ([]; . + $b))}' files/*/$version/manifest.json > output/$version/manifest.json
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4.3.4
-        with:
-          name: ${{ inputs.combined-name }}
-          path: output
