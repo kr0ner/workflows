@@ -111,6 +111,7 @@ jobs:
           yaml-file: ${{ matrix.file }}
           version: ${{ inputs.esphome-version }}
           complete-manifest: true
+          cache: true
           release-summary: ${{ inputs.release-summary }}
           release-url: ${{ inputs.release-url }}
       - name: Move files for versioning
