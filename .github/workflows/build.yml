@@ -78,10 +78,15 @@ jobs:
       matrix:
         file: ${{ fromJson(needs.prepare.outputs.files) }}
     steps:
+      - name: Dump vars context
+        env:
+          VARS_JSON: ${{ toJSON(github) }}
+        run: echo "${VARS_JSON}"
       - name: Checkout code
         uses: actions/checkout@v4.2.2
         with:
           path: 'esphome/OneESP32ToRuleThemAll'
+          ref: ${{ github.event.issue.pull_request.head.sha || github.event.pull_request.head.sha || github.sha }}
       - name: Write secrets
         uses: "DamianReeves/write-file-action@master"
         with:
@@ -153,6 +158,7 @@ jobs:
           cache: true
       - name: Report build status
         uses: actions/github-script@v7
+        if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
