@@ -118,6 +118,10 @@ jobs:
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           sed -i 's/^#\s*ttf07:/  ttf07:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
+      - name: Wpl13
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
+          sed -i 's/^#\s*wpl13:/  wpl13:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
@@ -129,48 +133,37 @@ jobs:
           find . -name '*.cpp' -o -name '*.h' -o -name '*.ino' | xargs clang-format-14 -i
           git diff --exit-code --color || (echo "Please run clang-format on your code." && exit 1)
       - name: Build Firmware for Thz504
-        uses: esphome/build-action@v4.0.3
+        uses: esphome/build-action@v6.0.0
         id: esphome-build
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Thz404
-        uses: esphome/build-action@v4.0.3
+        uses: esphome/build-action@v6.0.0
         id: esphome-build-thz404
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Thz55eco
-        uses: esphome/build-action@v4.0.3
+        uses: esphome/build-action@v6.0.0
         id: esphome-build-thz55eco
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Ttf07
-        uses: esphome/build-action@v4.0.3
+        uses: esphome/build-action@v6.0.0
         id: esphome-build-ttf07
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
-      - name: Report build status
-        uses: actions/github-script@v7
-        if: always()
+      - name: Build Firmware for Wpl13
+        uses: esphome/build-action@v6.0.0
+        id: esphome-build-wpl13
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            let status;
-            if ('${{ job.status }}' === 'success') {
-              status = 'completed successfully';
-            } else {
-              status = 'failed';
-            }
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `The GitHub Actions build has ${status}. Check the [workflow run details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
-            })
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
