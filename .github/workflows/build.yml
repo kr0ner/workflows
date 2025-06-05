@@ -133,35 +133,35 @@ jobs:
           find . -name '*.cpp' -o -name '*.h' -o -name '*.ino' | xargs clang-format-14 -i
           git diff --exit-code --color || (echo "Please run clang-format on your code." && exit 1)
       - name: Build Firmware for Thz504
-        uses: esphome/build-action@v6.0.0
+        uses: esphome/build-action@v7.0.0
         id: esphome-build
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Thz404
-        uses: esphome/build-action@v6.0.0
+        uses: esphome/build-action@v7.0.0
         id: esphome-build-thz404
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Thz55eco
-        uses: esphome/build-action@v6.0.0
+        uses: esphome/build-action@v7.0.0
         id: esphome-build-thz55eco
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Ttf07
-        uses: esphome/build-action@v6.0.0
+        uses: esphome/build-action@v7.0.0
         id: esphome-build-ttf07
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Wpl13
-        uses: esphome/build-action@v6.0.0
+        uses: esphome/build-action@v7.0.0
         id: esphome-build-wpl13
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
