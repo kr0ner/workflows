@@ -94,7 +94,7 @@ jobs:
           write-mode: overwrite
           contents: |
             wifi_ssid: "TestWifi"
-            wifi_password: "123456"
+            wifi_password: "1234567890"
             fallback_ssid: "Fallback Hotspot"
             fallback_password: "1234567890"
             api_password: "1234567890"
