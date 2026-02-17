@@ -96,13 +96,13 @@ jobs:
             wifi_ssid: "TestWifi"
             wifi_password: "123456"
             fallback_ssid: "Fallback Hotspot"
-            fallback_password: "123456"
-            api_password: "123456"
-            ota_password: "123456"
+            fallback_password: "1234567890"
+            api_password: "1234567890"
+            ota_password: "1234567890"
             api_encryption_key: "PK1TIZ9i0zyXWT9DXOFjvgDxq293t5Rti1q+evtOWxc="
             mqtt_server: "192.168.1.2"
             mqtt_user: "esphome"
-            mqtt_password: "123456"
+            mqtt_password: "1234567890"
       - name: Thz504
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
