@@ -106,22 +106,27 @@ jobs:
       - name: Thz504
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
       - name: Thz404
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
           sed -i 's/^#\s*thz404:/  thz404:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
       - name: Thz55eco
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
           sed -i 's/^#\s*thz55eco:/  thz55eco:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-thz55eco.yaml
       - name: Ttf07
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           sed -i 's/^#\s*ttf07:/  ttf07:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
       - name: Wpl13
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
           sed -i 's/^#\s*wpl13:/  wpl13:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
