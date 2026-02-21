@@ -107,6 +107,11 @@ jobs:
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
+      - name: Thz304
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz304.yaml
+          sed -i 's/^#\s*thz304:/  thz304:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-thz304.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-thz304.yaml
       - name: Thz404
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-thz404.yaml
@@ -142,6 +147,13 @@ jobs:
         id: esphome-build
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
+      - name: Build Firmware for Thz304
+        uses: esphome/build-action@v7.0.0
+        id: esphome-build-thz304
+        with:
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-thz304.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
       - name: Build Firmware for Thz404
