@@ -152,6 +152,11 @@ jobs:
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-5.yaml
           sed -i 's/^#\s*wpla5:/  wpla5:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-5.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-5.yaml
+      - name: Wpl-A-7
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
+          sed -i 's/^#\s*wpla7:/  wpla7:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
@@ -230,5 +235,12 @@ jobs:
         id: esphome-build-wpl-a-5
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-5.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
+      - name: Build Firmware for Wpl-A-7
+        uses: esphome/build-action@v7.0.0
+        id: esphome-build-wpl-a-7
+        with:
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
