@@ -127,17 +127,17 @@ jobs:
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           sed -i 's/^#\s*ttf07:/  ttf07:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-ttf07.yaml
-      - name: Wpl13
+      - name: Wpl-13
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
           sed -i 's/^#\s*wpl13:/  wpl13:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl13.yaml
-      - name: Wpl17
+      - name: Wpl-17
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl17.yaml
           sed -i 's/^#\s*wpl17:/  wpl17:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl17.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl17.yaml
-      - name: Wpl23
+      - name: Wpl-23
         run: |
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl23.yaml
           sed -i 's/^#\s*wpl23:/  wpl23:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl23.yaml
@@ -157,6 +157,11 @@ jobs:
           cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
           sed -i 's/^#\s*wpla7:/  wpla7:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
           sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
+      - name: Wpl-25
+        run: |
+          cp ${{ github.workspace }}/esphome/OneESP32ToRuleThemAll/esp32-poe-technik.yaml ${{ github.workspace }}/esphome/esp32-poe-technik-wpl25.yaml
+          sed -i 's/^#\s*wpl25:/  wpl25:/; s/^  thz504:/#\0/' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl25.yaml
+          sed -i 's/^#\s*analytics:/  analytics:/; s/"Landkreis"/"CI"/; s/ <-- remember to change the district//' ${{ github.workspace }}/esphome/esp32-poe-technik-wpl25.yaml
       - name: Replace project version
         run: |
           sed -i "s/version: dev/version: ${{ needs.prepare.outputs.version }}/g" ${{ matrix.file }}
@@ -242,5 +247,12 @@ jobs:
         id: esphome-build-wpl-a-7
         with:
           yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl-a-7.yaml
+          version: ${{ inputs.esphome-version }}
+          cache: true
+      - name: Build Firmware for Wpl25
+        uses: esphome/build-action@v7.0.0
+        id: esphome-build-wpl25
+        with:
+          yaml-file: ${{ github.workspace }}/esphome/esp32-poe-technik-wpl25.yaml
           version: ${{ inputs.esphome-version }}
           cache: true
